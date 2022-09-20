@@ -6,7 +6,7 @@ Made using [openweathermaps](https://openweathermap.org/api)
 
 
 
-Icons by [Rupa Design Works] (https://www.figma.com/@rupadesignworks)
+Icons by Rupa Design Works https://www.figma.com/@rupadesignworks
 
-Illustration by [Maria Shukshina] (https://icons8.com/illustrations/author/8EFXLhT3w7gp)from (https://icons8.com/illustrations)
+Illustration by https://icons8.com/illustrations/author/8EFXLhT3w7gp
 
