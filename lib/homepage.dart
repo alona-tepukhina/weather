@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'constants.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -11,6 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
+  bool showSpinner = false;
 
   // current weather variables
 
@@ -177,6 +179,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void updateUI() async {
+    setState(() {
+      showSpinner = true;
+    });
+
     Weather currentWeather = Weather(
         openWeatherMapURL: kOpenWeatherMapCurrentURL, cityName: cityName);
     Weather forecastWeather = Weather(
@@ -188,6 +194,8 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       //setting current weather
+
+      showSpinner = false;
 
       var time = DateTime.now();
       city = currentWeatherData["name"];
@@ -243,7 +251,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: ModalProgressHUD(
+        inAsyncCall: showSpinner,
         child: Padding(
           padding:
               //const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),

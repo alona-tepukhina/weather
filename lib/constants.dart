@@ -1,4 +1,4 @@
-const kWeatherApiKey = '';
+const kWeatherApiKey;
 const kOpenWeatherMapForecastURL =
     'https://api.openweathermap.org/data/2.5/forecast';
 const kOpenWeatherMapCurrentURL =
