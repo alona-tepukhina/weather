@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'weather.dart';
 import 'constants.dart';
+import 'widgets/hour_forecast_item.dart';
+import 'widgets/current_weather_widget.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,7 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
-  bool showSpinner = false;
 
   // current weather variables
 
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
     7: "Sun"
   };
 
+  // make as mixin ???
   String getConditionImage({required int id, required int hour}) {
     if (id >= 200 && id < 300) {
       return 'images/rain-thunder.png';
@@ -93,96 +95,7 @@ class _HomePageState extends State<HomePage> {
     updateUI();
   }
 
-  Widget createCurrentWeather() {
-    return Column(
-      children: [
-        Text(
-          city ?? '',
-          style: const TextStyle(fontSize: 30),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${temperature.round()}°C ',
-              style: const TextStyle(fontSize: 96),
-            ),
-            Image.asset(
-              conditionImage,
-              height: 64,
-            ),
-          ],
-        ),
-        Text(
-          weatherMessage,
-          style: const TextStyle(fontSize: 24),
-        ),
-        Text(
-          'Wind speed $windSpeed m/s',
-          style: const TextStyle(fontSize: 24),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              //'Sunrise: $sunriseHour.$sunriseMin',
-              'Sunrise: $sunriseHour.$sunriseMinStr',
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(
-              width: 16,
-            ),
-            Text(
-              'Sunset: $sunsetHour.$sunsetMinStr',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget createHourForecastItem() {
-    return Card(
-      //color: Colors.blueGrey,
-      //shadowColor: Colors.black12,
-      //elevation: 2.0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Text(
-              hfWeekDayText,
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              '$hfTime.00',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Image.asset(
-              hfConditionImage,
-              height: 32,
-            ),
-            Text(
-              '${hfTemperature.round()}°C',
-              style: const TextStyle(fontSize: 16),
-            ),
-            Text(
-              '$hfWindSpeed m/s',
-              style: const TextStyle(fontSize: 16),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void updateUI() async {
-    setState(() {
-      showSpinner = true;
-    });
-
     Weather currentWeather = Weather(
         openWeatherMapURL: kOpenWeatherMapCurrentURL, cityName: cityName);
     Weather forecastWeather = Weather(
@@ -193,44 +106,49 @@ class _HomePageState extends State<HomePage> {
     //print(weatherData);
 
     setState(() {
-      //setting current weather
-
-      showSpinner = false;
+      // current weather
 
       var time = DateTime.now();
+
       city = currentWeatherData["name"];
       temperature = currentWeatherData["main"]["temp"];
       windSpeed = currentWeatherData["wind"]["speed"];
       conditionId = currentWeatherData["weather"][0]["id"];
       conditionImage = getConditionImage(id: conditionId, hour: time.hour);
       weatherMessage = currentWeatherData["weather"][0]["description"];
+
       sunriseDateTime = DateTime.fromMillisecondsSinceEpoch(
           currentWeatherData["sys"]["sunrise"] * 1000);
-
       sunriseHour = sunriseDateTime?.hour ?? 0;
       sunriseMin = sunriseDateTime?.minute ?? 0;
-
       sunriseMinStr = (sunriseMin < 10) ? '0$sunriseMin' : '$sunriseMin';
 
       sunsetDateTime = DateTime.fromMillisecondsSinceEpoch(
           currentWeatherData["sys"]["sunset"] * 1000);
-      //final DateTime date1 = DateTime.fromMillisecondsSinceEpoch(timestamp1 * 1000);
       sunsetHour = sunsetDateTime?.hour ?? 0;
       sunsetMin = sunsetDateTime?.minute ?? 0;
       sunsetMinStr = (sunsetMin < 10) ? '0$sunsetMin' : '$sunsetMin';
 
-      if (sunsetMin < 10) {
-        sunsetMinStr = '0$sunsetMin';
-      }
+      currentWeatherWidget = CurrentWeatherWidget(
+        city: city!,
+        temperature: temperature,
+        conditionImage: conditionImage,
+        weatherMessage: weatherMessage,
+        windSpeed: windSpeed,
+        sunriseHour: sunriseHour,
+        sunriseMinStr: sunriseMinStr,
+        sunsetHour: sunsetHour,
+        sunsetMinStr: sunsetMinStr,
+      );
 
-      currentWeatherWidget = createCurrentWeather();
+      // hour forecast
 
       hfItems = [];
 
       for (int i = 0; i < kCnt; i++) {
         hfDateTimeString = forecastWeatherData["list"][i]["dt_txt"];
-        //hfTime = 3 + (DateTime.parse(hfDateTimeString).hour);
-        hfTime = 3 + (DateTime.parse(hfDateTimeString).toLocal().hour);
+        hfTime = 3 + (DateTime.parse(hfDateTimeString).hour);
+        //hfTime = (DateTime.parse(hfDateTimeString).toLocal().hour);
 
         hfDay = (DateTime.parse(hfDateTimeString).day);
         hfWeekDay = (DateTime.parse(hfDateTimeString).weekday);
@@ -243,7 +161,12 @@ class _HomePageState extends State<HomePage> {
         hfWeekDayText =
             ((hfDay == time.day) ? 'Today' : hfWeekdayName[hfWeekDay]!);
 
-        hfItems.add((createHourForecastItem()));
+        hfItems.add((HourForecastItem(
+            hfWeekDayText: hfWeekDayText,
+            hfTime: hfTime,
+            hfConditionImage: hfConditionImage,
+            hfTemperature: hfTemperature,
+            hfWindSpeed: hfWindSpeed)));
       }
     });
   }
@@ -251,69 +174,62 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding:
-              //const EdgeInsets.symmetric(horizontal: 8.0, vertical: 24.0),
-              const EdgeInsets.only(top: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: 24,
-                  ),
-                  Expanded(
-                    child: TextField(
-                      //autofocus: true,
-                      onSubmitted: (value) {
-                        cityName = value;
-                        //print(cityName);
-                        updateUI();
-                      },
-                      controller: _controller,
-                      decoration: const InputDecoration(
-                        //prefixIcon: Icon(Icons.search),
-                        suffixIcon: Icon(Icons.search),
-                        labelText: 'City name',
-                        hintText: 'Enter city name',
-                        //label: city,
-                        //labelText: 'Enter city name',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    // current location weather
-                    onPressed: () {
-                      setState(() {
-                        cityName = '';
-                        _controller.clear();
-                      });
+      body: Padding(
+        padding: const EdgeInsets.only(top: 24.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 24,
+                ),
+                Expanded(
+                  child: TextField(
+                    //autofocus: true,
+                    onSubmitted: (value) {
+                      cityName = value;
+                      //print(cityName);
                       updateUI();
                     },
-                    icon: const Icon(Icons.location_on_outlined),
-                    iconSize: 48,
+                    controller: _controller,
+                    decoration: const InputDecoration(
+                      //prefixIcon: Icon(Icons.search),
+                      suffixIcon: Icon(Icons.search),
+                      labelText: 'City name',
+                      hintText: 'Enter city name',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
-                ],
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              currentWeatherWidget,
-              const SizedBox(
-                height: 28,
-              ),
-              Expanded(
-                child:
-                    ListView(scrollDirection: Axis.vertical, children: hfItems),
-              ),
-            ],
-          ),
+                ),
+                IconButton(
+                  // current location weather
+                  onPressed: () {
+                    setState(() {
+                      cityName = '';
+                      _controller.clear();
+                    });
+                    updateUI();
+                  },
+                  icon: const Icon(Icons.location_on_outlined),
+                  iconSize: 48,
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            currentWeatherWidget,
+            const SizedBox(
+              height: 28,
+            ),
+            Expanded(
+              child:
+                  ListView(scrollDirection: Axis.vertical, children: hfItems),
+            ),
+          ],
         ),
       ),
     );
