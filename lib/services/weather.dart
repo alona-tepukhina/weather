@@ -1,6 +1,6 @@
 import 'networking.dart';
 import 'location.dart';
-import 'constants.dart';
+import '../constants.dart';
 
 class Weather {
   Weather({required this.openWeatherMapURL, this.cityName});

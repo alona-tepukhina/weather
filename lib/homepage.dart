@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'weather.dart';
+import 'services/weather.dart';
 import 'constants.dart';
 import 'widgets/hour_forecast_item.dart';
 import 'widgets/current_weather_widget.dart';
-import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -174,62 +173,64 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.only(top: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(
-                  width: 24,
-                ),
-                Expanded(
-                  child: TextField(
-                    //autofocus: true,
-                    onSubmitted: (value) {
-                      cityName = value;
-                      //print(cityName);
-                      updateUI();
-                    },
-                    controller: _controller,
-                    decoration: const InputDecoration(
-                      //prefixIcon: Icon(Icons.search),
-                      suffixIcon: Icon(Icons.search),
-                      labelText: 'City name',
-                      hintText: 'Enter city name',
-                      border: OutlineInputBorder(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 24,
+                  ),
+                  Expanded(
+                    child: TextField(
+                      //autofocus: true,
+                      onSubmitted: (value) {
+                        cityName = value;
+                        //print(cityName);
+                        updateUI();
+                      },
+                      controller: _controller,
+                      decoration: const InputDecoration(
+                        //prefixIcon: Icon(Icons.search),
+                        suffixIcon: Icon(Icons.search),
+                        labelText: 'City name',
+                        hintText: 'Enter city name',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  // current location weather
-                  onPressed: () {
-                    setState(() {
-                      cityName = '';
-                      _controller.clear();
-                    });
-                    updateUI();
-                  },
-                  icon: const Icon(Icons.location_on_outlined),
-                  iconSize: 48,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            currentWeatherWidget,
-            const SizedBox(
-              height: 28,
-            ),
-            Expanded(
-              child:
-                  ListView(scrollDirection: Axis.vertical, children: hfItems),
-            ),
-          ],
+                  IconButton(
+                    // current location weather
+                    onPressed: () {
+                      setState(() {
+                        cityName = '';
+                        _controller.clear();
+                      });
+                      updateUI();
+                    },
+                    icon: const Icon(Icons.location_on_outlined),
+                    iconSize: 48,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              currentWeatherWidget,
+              const SizedBox(
+                height: 28,
+              ),
+              Expanded(
+                child:
+                    ListView(scrollDirection: Axis.vertical, children: hfItems),
+              ),
+            ],
+          ),
         ),
       ),
     );
