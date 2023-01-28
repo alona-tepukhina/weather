@@ -37,32 +37,47 @@ class HourForecastItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        padding: const EdgeInsets.all(8),
+        child: Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          columnWidths: const {4: FixedColumnWidth(86)},
           children: [
-            Text(
-              hourForecast.weekDay ?? '',
-              style: kHfTextStyle,
-            ),
-            Text(
-              '${hourForecast.hour}.00' ?? '',
-              style: kHfTextStyle,
-            ),
-            Image.asset(
-              getConditionImage(
-                id: hourForecast.conditionCode ?? 0,
-                hour: hourForecast.hour,
-              ),
-              height: 32,
-            ),
-            Text(
-              '${hourForecast.temperature?.round()}°C',
-              style: kHfTextStyle,
-            ),
-            Text(
-              '${hourForecast.windSpeed} m/s',
-              style: kHfTextStyle,
+            TableRow(
+              children: [
+                Center(
+                  child: Text(
+                    hourForecast.weekDay ?? '',
+                    style: kHfTextStyle,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${hourForecast.hour}.00' ?? '',
+                    style: kHfTextStyle,
+                  ),
+                ),
+                Center(
+                  child: Image.asset(
+                    getConditionImage(
+                      id: hourForecast.conditionCode ?? 0,
+                      hour: hourForecast.hour,
+                    ),
+                    height: 32,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${hourForecast.temperature?.round()}°C',
+                    style: kHfTextStyle,
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    '${hourForecast.windSpeed} m/s',
+                    style: kHfTextStyle,
+                  ),
+                ),
+              ],
             ),
           ],
         ),

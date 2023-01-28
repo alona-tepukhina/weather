@@ -61,6 +61,7 @@ class CurrentWeatherWidget extends StatelessWidget {
           'Wind speed ${currentWeather.windSpeed} m/s',
           style: const TextStyle(fontSize: 24),
         ),
+        const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

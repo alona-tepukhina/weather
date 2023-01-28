@@ -37,6 +37,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void updateUI() async {
+    setState(() {
+      currentWeather = null;
+      hourForecastList = [];
+    });
+
     currentWeatherData =
         await WeatherData(url: kCurrentWeatherURL, cityName: cityName)
             .getLocationWeather();
@@ -44,9 +49,12 @@ class _HomePageState extends State<HomePage> {
         await WeatherData(url: kForecastWeatherURL, cityName: cityName)
             .getLocationWeather();
 
+    // currentWeather = CurrentWeather.fromJson(currentWeatherData);
+    // hourForecastList = HourForecast.forecastListFromJson(forecastWeatherData);
+
     setState(() {
-      currentWeather = null;
-      hourForecastList = [];
+      // currentWeather = null;
+      // hourForecastList = [];
       currentWeather = CurrentWeather.fromJson(currentWeatherData);
       hourForecastList = HourForecast.forecastListFromJson(forecastWeatherData);
     });
@@ -110,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                             CurrentWeatherWidget(
                                 currentWeather: currentWeather!),
                             const SizedBox(
-                              height: 28,
+                              height: 20,
                             ),
                             SizedBox(
                               height: MediaQuery.of(context).size.height -
