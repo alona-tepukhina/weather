@@ -1,16 +1,14 @@
 # weather_forecast
 
-A new Flutter project.
+Weather application displaying current weather and weather forecast with 3 hours accuracy. 
+Made using [openweathermaps](https://openweathermap.org/api)
+To make it work you need to enter openweathermaps API key into constants file.
 
-## Getting Started
+![oslo](https://user-images.githubusercontent.com/54019003/215274517-18feffff-956e-495e-916e-0203af1da78b.jpg)
 
-This project is a starting point for a Flutter application.
+Icons by Rupa Design Works https://www.figma.com/@rupadesignworks
 
-A few resources to get you started if this is your first Flutter project:
+Illustration by Maria Shukshina https://icons8.com/illustrations/author/8EFXLhT3w7gp
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
