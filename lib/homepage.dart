@@ -112,24 +112,19 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(
                               height: 28,
                             ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            if (hourForecastList.isNotEmpty)
-                              //TODO: Temporary solution
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height -
-                                    64 -
-                                    325,
-                                child: ListView.builder(
-                                  itemCount: hourForecastList.length,
-                                  itemBuilder: (context, index) {
-                                    return HourForecastItem(
-                                        hourForecast: hourForecastList[index]);
-                                  },
-                                ),
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height -
+                                  64 -
+                                  325 -
+                                  MediaQuery.of(context).viewInsets.bottom,
+                              child: ListView.builder(
+                                itemCount: hourForecastList.length,
+                                itemBuilder: (context, index) {
+                                  return HourForecastItem(
+                                      hourForecast: hourForecastList[index]);
+                                },
                               ),
+                            ),
                           ],
                         ),
                       ],
