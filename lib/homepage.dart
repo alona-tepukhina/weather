@@ -44,10 +44,11 @@ class _HomePageState extends State<HomePage> {
         await WeatherData(url: kForecastWeatherURL, cityName: cityName)
             .getLocationWeather();
 
-    hourForecastList = HourForecast.forecastListFromJson(forecastWeatherData);
-
     setState(() {
+      currentWeather = null;
+      hourForecastList = [];
       currentWeather = CurrentWeather.fromJson(currentWeatherData);
+      hourForecastList = HourForecast.forecastListFromJson(forecastWeatherData);
     });
   }
 
@@ -69,15 +70,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Expanded(
                     child: TextField(
-                      //autofocus: true,
                       onSubmitted: (value) {
                         cityName = value;
-                        //print(cityName);
                         updateUI();
                       },
                       controller: _controller,
                       decoration: const InputDecoration(
-                        //prefixIcon: Icon(Icons.search),
                         suffixIcon: Icon(Icons.search),
                         labelText: 'City name',
                         hintText: 'Enter city name',
@@ -99,36 +97,43 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              //TODO: fix circular progress indicator position
-              (currentWeather == null)
-                  ? const CircularProgressIndicator()
+              (hourForecastList.isEmpty)
+                  ? const Expanded(
+                      child: Center(child: CircularProgressIndicator()))
                   : Column(
                       children: [
-                        const SizedBox(
-                          height: 24,
+                        Column(
+                          children: [
+                            const SizedBox(
+                              height: 24,
+                            ),
+                            CurrentWeatherWidget(
+                                currentWeather: currentWeather!),
+                            const SizedBox(
+                              height: 28,
+                            ),
+                          ],
                         ),
-                        CurrentWeatherWidget(currentWeather: currentWeather!),
-                        const SizedBox(
-                          height: 28,
+                        Column(
+                          children: [
+                            if (hourForecastList.isNotEmpty)
+                              //TODO: Temporary solution
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height -
+                                    64 -
+                                    325,
+                                child: ListView.builder(
+                                  itemCount: hourForecastList.length,
+                                  itemBuilder: (context, index) {
+                                    return HourForecastItem(
+                                        hourForecast: hourForecastList[index]);
+                                  },
+                                ),
+                              ),
+                          ],
                         ),
                       ],
                     ),
-
-              Column(
-                children: [
-                  if (hourForecastList.isNotEmpty)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height - 64 - 325,
-                      child: ListView.builder(
-                        itemCount: hourForecastList.length,
-                        itemBuilder: (context, index) {
-                          return HourForecastItem(
-                              hourForecast: hourForecastList[index]);
-                        },
-                      ),
-                    ),
-                ],
-              ),
             ],
           ),
         ),
